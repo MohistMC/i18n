@@ -31,7 +31,6 @@ import java.util.TimeZone;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class i18n {
-    public static Map<ClassLoader, Map<String, String>> CACHE = new ConcurrentHashMap<>();
     public static Map<String, String> CURRENT_CACHE = new ConcurrentHashMap<>();
     private static PropertyResourceBundle rb;
     private static ClassLoader classLoader;
@@ -39,18 +38,8 @@ public class i18n {
     private static Locale locale;
     private static InputStream inputStream;
 
-    /**
-     * Store as a Map with ClassLoader as the key  -> CACHE ↑
-     */
-    @Deprecated
-    private boolean init = false;
-
     @SneakyThrows
-    public void build(ClassLoader classLoader, Locale locale) {
-        if (init) {
-            System.out.println("Mohist i18n For use by Mohist only");
-            System.exit(0);
-        }
+    public i18n build(ClassLoader classLoader, Locale locale) {
         this.classLoader = classLoader;
         this.locale = locale;
         String lang = "_" + locale.getLanguage() + "_" + locale.getCountry();
@@ -63,11 +52,11 @@ public class i18n {
             System.exit(0);
         }
         rb = new PropertyResourceBundle(new InputStreamReader(inputStream, StandardCharsets.UTF_8));
-        init = true;
+        return this;
     }
 
 
-    public static String get(String key) {
+    public String get(String key) {
         String string = rb.getString(key);
         if (!CURRENT_CACHE.containsKey(key)) {
             CURRENT_CACHE.put(key, string);
@@ -77,7 +66,7 @@ public class i18n {
         return string;
     }
 
-    public static String get(String key, Object... f) {
+    public String get(String key, Object... f) {
         return new MessageFormat(get(key)).format(f);
     }
 
