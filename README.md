@@ -19,7 +19,7 @@ dependencies {
 Code
 ```
 // Init
-i18n i18n = new i18n().build(ClassLoader classLoader, Locale locale);
+i18n i18n = new i18n(ClassLoader classLoader, Locale locale);
 // Use
 i18n.get(key);
 ```

@@ -40,7 +40,7 @@ public class i18n {
     private static InputStream inputStream;
 
     @SneakyThrows
-    public i18n i18n(ClassLoader classLoader, Locale locale) {
+    public i18n(ClassLoader classLoader, Locale locale) {
         this.locale = locale;
         String lang = "_" + locale.getLanguage() + "_" + locale.getCountry();
         InputStream deFinputStream = classLoader.getResourceAsStream("lang/" + properties + ".properties");
@@ -52,7 +52,6 @@ public class i18n {
             System.exit(0);
         }
         rb = new PropertyResourceBundle(new InputStreamReader(inputStream, StandardCharsets.UTF_8));
-        return this;
     }
 
 
