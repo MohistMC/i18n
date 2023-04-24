@@ -18,6 +18,7 @@
 
 package com.mohistmc.i18n;
 
+import lombok.Getter;
 import lombok.SneakyThrows;
 
 import java.io.InputStream;
@@ -33,14 +34,13 @@ import java.util.concurrent.ConcurrentHashMap;
 public class i18n {
     public static Map<String, String> CURRENT_CACHE = new ConcurrentHashMap<>();
     private static PropertyResourceBundle rb;
-    private static ClassLoader classLoader;
     private static String properties = "message";
+    @Getter
     private static Locale locale;
     private static InputStream inputStream;
 
     @SneakyThrows
-    public i18n build(ClassLoader classLoader, Locale locale) {
-        this.classLoader = classLoader;
+    public i18n i18n(ClassLoader classLoader, Locale locale) {
         this.locale = locale;
         String lang = "_" + locale.getLanguage() + "_" + locale.getCountry();
         InputStream deFinputStream = classLoader.getResourceAsStream("lang/" + properties + ".properties");
@@ -72,6 +72,6 @@ public class i18n {
 
     public static boolean isCN() {
         TimeZone timeZone = TimeZone.getDefault();
-        return "Asia/Shanghai".equals(timeZone.getID()) || "CN".equals(rb.getLocale().getCountry());
+        return "Asia/Shanghai".equals(timeZone.getID()) || "CN".equals(locale.getCountry());
     }
 }
