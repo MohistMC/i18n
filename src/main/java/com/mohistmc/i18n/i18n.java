@@ -69,7 +69,7 @@ public class i18n {
         return new MessageFormat(get(key)).format(f);
     }
 
-    public static boolean isCN() {
+    public boolean isCN() {
         TimeZone timeZone = TimeZone.getDefault();
         return "Asia/Shanghai".equals(timeZone.getID()) || "CN".equals(locale.getCountry());
     }
