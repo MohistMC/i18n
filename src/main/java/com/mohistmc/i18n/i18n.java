@@ -34,17 +34,32 @@ import java.util.concurrent.ConcurrentHashMap;
 public class i18n {
     public static Map<String, String> CURRENT_CACHE = new ConcurrentHashMap<>();
     private static PropertyResourceBundle rb;
-    private static String properties = "message";
+    private static final String properties = "message";
     @Getter
     private static Locale locale;
     private static InputStream inputStream;
 
     @SneakyThrows
     public i18n(ClassLoader classLoader, Locale locale) {
-        this.locale = locale;
+        i18n.locale = locale;
         String lang = "_" + locale.getLanguage() + "_" + locale.getCountry();
         InputStream deFinputStream = classLoader.getResourceAsStream("lang/" + properties + ".properties");
         inputStream = classLoader.getResourceAsStream("lang/" + properties + lang + ".properties");
+        if (inputStream == null) {
+            inputStream = deFinputStream;
+        } else if (inputStream == null) {
+            System.out.println("invalid language file");
+            System.exit(0);
+        }
+        rb = new PropertyResourceBundle(new InputStreamReader(inputStream, StandardCharsets.UTF_8));
+    }
+
+    @SneakyThrows
+    public i18n(Class<?> classz, Locale locale) {
+        i18n.locale = locale;
+        String lang = "_" + locale.getLanguage() + "_" + locale.getCountry();
+        InputStream deFinputStream = classz.getResourceAsStream("/lang/" + properties + ".properties");
+        inputStream = classz.getResourceAsStream("/lang/" + properties + lang + ".properties");
         if (inputStream == null) {
             inputStream = deFinputStream;
         } else if (inputStream == null) {

@@ -12,7 +12,7 @@ Gradle
  }
 
 dependencies {
-    implementation 'com.mohistmc:i18n:0.1'
+    implementation 'com.mohistmc:i18n:0.2'
 }
 ```  
 
@@ -20,6 +20,11 @@ Code
 ```
 // Init
 i18n i18n = new i18n(ClassLoader classLoader, Locale locale);
+// Use
+i18n.get(key);
+
+// Init
+i18n i18n = new i18n(Class<?> classz, Locale locale);
 // Use
 i18n.get(key);
 ```
