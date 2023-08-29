@@ -18,7 +18,6 @@
 
 package com.mohistmc.i18n;
 
-import lombok.Getter;
 import lombok.SneakyThrows;
 
 import java.io.InputStream;
@@ -32,46 +31,82 @@ import java.util.TimeZone;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class i18n {
-    public static Map<String, String> CURRENT_CACHE = new ConcurrentHashMap<>();
-    private static PropertyResourceBundle rb;
-    private static final String properties = "message";
-    @Getter
-    private static Locale locale;
-    private static InputStream inputStream;
+    public Map<String, String> CURRENT_CACHE = new ConcurrentHashMap<>();
+    private PropertyResourceBundle rb;
+    private PropertyResourceBundle defaultBundle;
+    private final String properties = "message";
+    private final Locale locale;
 
     @SneakyThrows
     public i18n(ClassLoader classLoader, Locale locale) {
-        i18n.locale = locale;
-        String lang = "_" + locale.getLanguage() + "_" + locale.getCountry();
+        this.locale = locale(locale.toString());
+        String lang = "_" + this.locale.getLanguage() + "_" + this.locale.getCountry();
         InputStream deFinputStream = classLoader.getResourceAsStream("lang/" + properties + ".properties");
-        inputStream = classLoader.getResourceAsStream("lang/" + properties + lang + ".properties");
+        InputStream inputStream = classLoader.getResourceAsStream("lang/" + properties + lang + ".properties");
         if (inputStream == null) {
             inputStream = deFinputStream;
         } else if (inputStream == null) {
-            System.out.println("invalid language file");
+            System.out.println("[i18N] Invalid language file");
             System.exit(0);
         }
-        rb = new PropertyResourceBundle(new InputStreamReader(inputStream, StandardCharsets.UTF_8));
+        prb(deFinputStream, inputStream);
+    }
+
+    public i18n(ClassLoader classLoader, String langByString) {
+        this(classLoader, locale(langByString));
     }
 
     @SneakyThrows
     public i18n(Class<?> classz, Locale locale) {
-        i18n.locale = locale;
-        String lang = "_" + locale.getLanguage() + "_" + locale.getCountry();
+        this.locale = locale(locale.toString());
+        String lang = "_" + this.locale.getLanguage() + "_" + this.locale.getCountry();
         InputStream deFinputStream = classz.getResourceAsStream("/lang/" + properties + ".properties");
-        inputStream = classz.getResourceAsStream("/lang/" + properties + lang + ".properties");
+        InputStream inputStream = classz.getResourceAsStream("/lang/" + properties + lang + ".properties");
         if (inputStream == null) {
             inputStream = deFinputStream;
         } else if (inputStream == null) {
-            System.out.println("invalid language file");
+            System.out.println("[i18N] Invalid language file");
             System.exit(0);
         }
-        rb = new PropertyResourceBundle(new InputStreamReader(inputStream, StandardCharsets.UTF_8));
+        prb(deFinputStream, inputStream);
+    }
+
+    public i18n(Class<?> classz, String langByString) {
+        this(classz, locale(langByString));
+    }
+
+    private static Locale locale(String locale) {
+        Locale defaultLocale = Locale.getDefault();
+        if (locale.contains("_") && locale.split("_").length == 2) {
+            String l = locale.split("_")[0];
+            String c = locale.split("_")[1];
+            defaultLocale = new Locale(l, c);
+        }
+        if (defaultLocale.getLanguage().isEmpty() || defaultLocale.getCountry().isEmpty()) {
+            defaultLocale = new Locale("xx", "XX");
+        }
+
+        return defaultLocale;
+    }
+
+    @SneakyThrows
+    private void prb(InputStream deFinputStream, InputStream in) {
+        defaultBundle = new PropertyResourceBundle(new InputStreamReader(deFinputStream, StandardCharsets.UTF_8));
+        rb = new PropertyResourceBundle(new InputStreamReader(in, StandardCharsets.UTF_8));
     }
 
 
     public String get(String key) {
-        String string = rb.getString(key);
+        String string;
+        if (rb.containsKey(key)) {
+            string = rb.getString(key);
+        } else {
+            if (defaultBundle.containsKey(key)) {
+                string = defaultBundle.getString(key);
+            } else {
+                string = key;
+            }
+        }
         if (!CURRENT_CACHE.containsKey(key)) {
             CURRENT_CACHE.put(key, string);
         } else {
@@ -86,6 +121,6 @@ public class i18n {
 
     public boolean isCN() {
         TimeZone timeZone = TimeZone.getDefault();
-        return "Asia/Shanghai".equals(timeZone.getID()) || "CN".equals(locale.getCountry());
+        return Locale.getDefault().getCountry().equals("CN") || "Asia/Shanghai".equals(timeZone.getID()) || "CN".equals(locale.getCountry());
     }
 }

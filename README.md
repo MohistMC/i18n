@@ -12,7 +12,7 @@ Gradle
  }
 
 dependencies {
-    implementation 'com.mohistmc:i18n:0.2'
+    implementation 'com.mohistmc:i18n:0.3'
 }
 ```  
 
