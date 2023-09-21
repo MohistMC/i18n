@@ -27,7 +27,6 @@ import java.text.MessageFormat;
 import java.util.Locale;
 import java.util.Map;
 import java.util.PropertyResourceBundle;
-import java.util.TimeZone;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class i18n {
@@ -95,7 +94,7 @@ public class i18n {
         rb = new PropertyResourceBundle(new InputStreamReader(in, StandardCharsets.UTF_8));
     }
 
-
+    @Deprecated
     public String get(String key) {
         String string;
         if (rb.containsKey(key)) {
@@ -115,12 +114,30 @@ public class i18n {
         return string;
     }
 
+    public String as(String key) {
+        return get(key);
+    }
+
+    @Deprecated
     public String get(String key, Object... f) {
         return new MessageFormat(get(key)).format(f);
     }
 
+    /**
+     *  Use %s instead of {0-9}
+     * @param key
+     * @param f
+     * @return
+     */
+    public String as(String key, Object... f) {
+        return get(key).formatted(f);
+    }
+
     public boolean isCN() {
-        TimeZone timeZone = TimeZone.getDefault();
-        return Locale.getDefault().getCountry().equals("CN") || "Asia/Shanghai".equals(timeZone.getID()) || "CN".equals(locale.getCountry());
+        return is("CN");
+    }
+
+    public boolean is(String country) {
+        return Locale.getDefault().getCountry().equals(country) || country.equals(locale.getCountry());
     }
 }
