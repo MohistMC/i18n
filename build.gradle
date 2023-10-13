@@ -4,7 +4,7 @@ plugins {
 }
 
 group = 'com.mohistmc'
-version = '0.4'
+version = '0.5'
 
 repositories {
     mavenCentral()
@@ -17,8 +17,8 @@ tasks.withType(JavaCompile).configureEach {
 
 
 dependencies {
-    annotationProcessor 'org.projectlombok:lombok:1.18.24'
-    compileOnly 'org.projectlombok:lombok:1.18.24'
+    annotationProcessor 'org.projectlombok:lombok:1.18.30'
+    compileOnly 'org.projectlombok:lombok:1.18.30'
 }
 
 publishing {

@@ -23,7 +23,6 @@ import lombok.SneakyThrows;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
-import java.text.MessageFormat;
 import java.util.Locale;
 import java.util.Map;
 import java.util.PropertyResourceBundle;
@@ -95,7 +94,7 @@ public class i18n {
     }
 
     @Deprecated
-    public String get(String key) {
+    public String as(String key) {
         String string;
         if (rb.containsKey(key)) {
             string = rb.getString(key);
@@ -114,15 +113,6 @@ public class i18n {
         return string;
     }
 
-    public String as(String key) {
-        return get(key);
-    }
-
-    @Deprecated
-    public String get(String key, Object... f) {
-        return new MessageFormat(get(key)).format(f);
-    }
-
     /**
      *  Use %s instead of {0-9}
      * @param key
@@ -130,7 +120,7 @@ public class i18n {
      * @return
      */
     public String as(String key, Object... f) {
-        return get(key).formatted(f);
+        return as(key).formatted(f);
     }
 
     public boolean isCN() {
