@@ -93,7 +93,6 @@ public class i18n {
         rb = new PropertyResourceBundle(new InputStreamReader(in, StandardCharsets.UTF_8));
     }
 
-    @Deprecated
     public String as(String key) {
         String string;
         if (rb.containsKey(key)) {
