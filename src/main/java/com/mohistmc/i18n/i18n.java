@@ -29,7 +29,7 @@ import java.util.PropertyResourceBundle;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class i18n {
-    public Map<String, String> CURRENT_CACHE = new ConcurrentHashMap<>();
+    public final Map<String, String> CURRENT_CACHE = new ConcurrentHashMap<>();
     private PropertyResourceBundle rb;
     private PropertyResourceBundle defaultBundle;
     private final String properties = "message";
@@ -41,9 +41,9 @@ public class i18n {
         String lang = "_" + this.locale.getLanguage() + "_" + this.locale.getCountry();
         InputStream deFinputStream = classLoader.getResourceAsStream("lang/" + properties + ".properties");
         InputStream inputStream = classLoader.getResourceAsStream("lang/" + properties + lang + ".properties");
-        if (inputStream == null) {
+        if (isEmpty(inputStream)) {
             inputStream = deFinputStream;
-        } else if (inputStream == null) {
+        } else if (isEmpty(inputStream)) {
             System.out.println("[i18N] Invalid language file");
             System.exit(0);
         }
@@ -60,9 +60,9 @@ public class i18n {
         String lang = "_" + this.locale.getLanguage() + "_" + this.locale.getCountry();
         InputStream deFinputStream = classz.getResourceAsStream("/lang/" + properties + ".properties");
         InputStream inputStream = classz.getResourceAsStream("/lang/" + properties + lang + ".properties");
-        if (inputStream == null) {
+        if (isEmpty(inputStream)) {
             inputStream = deFinputStream;
-        } else if (inputStream == null) {
+        } else if (isEmpty(inputStream)) {
             System.out.println("[i18N] Invalid language file");
             System.exit(0);
         }
@@ -128,5 +128,9 @@ public class i18n {
 
     public boolean is(String country) {
         return Locale.getDefault().getCountry().equals(country) || country.equals(locale.getCountry());
+    }
+
+    private boolean isEmpty(InputStream inputStream) {
+        return inputStream == null;
     }
 }
